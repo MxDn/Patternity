@@ -1,0 +1,174 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.mdm.batch</groupId>
+	<artifactId>batch-marketplace-annual-tax-return</artifactId>
+	<packaging>jar</packaging>
+	<name>batch-marketplace-annual-tax-return</name>
+	<version>0.5.0</version>
+
+	<properties>
+		<java.version>11</java.version>
+		<spring-cloud-gcp.version>1.2.8.RELEASE</spring-cloud-gcp.version>
+		<spring-cloud.version>2020.0.2</spring-cloud.version>
+		<mirakl-sdk.version>3.25.56</mirakl-sdk.version>
+		<!-- maven plugins -->
+		<jaxb2-maven-plugin.version>2.5.0</jaxb2-maven-plugin.version>
+		<core-spring-boot-starter.version>1.0.0</core-spring-boot-starter.version>
+		<commons-collections4.version>4.4</commons-collections4.version>
+		<commons-io.version>2.11.0</commons-io.version>
+		<mockito-inline.version>3.11.2</mockito-inline.version>
+	</properties>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.5.5</version>
+	</parent>
+
+	<dependencies>
+		<!-- dependances spring -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-gcp-starter-storage</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-batch</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		
+		<!-- Reactor Netty : default runtime for Spring Boot 2.0 -->
+        <dependency>
+            <groupId>io.projectreactor.netty</groupId>
+            <artifactId>reactor-netty</artifactId>
+        </dependency>
+
+		<!-- Mirakl -->
+		<dependency>
+			<groupId>com.mirakl</groupId>
+			<artifactId>mmp-sdk-operator</artifactId>
+			<version>${mirakl-sdk.version}</version>
+		</dependency>
+
+		<!-- autres... -->
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>${commons-io.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Apache Utils -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-collections4</artifactId>
+			<version>${commons-collections4.version}</version>
+		</dependency>
+
+		<!-- ================== Librairies MDM ================== -->
+		<dependency>
+			<groupId>com.mdm.core</groupId>
+			<artifactId>core-spring-boot-starter</artifactId>
+			<version>${core-spring-boot-starter.version}</version>
+		</dependency>
+		
+		<!-- Test dependencies -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.batch</groupId>
+			<artifactId>spring-batch-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-inline</artifactId>
+			<version>${mockito-inline.version}</version>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+		</dependency>
+		
+	</dependencies>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-gcp-dependencies</artifactId>
+				<version>${spring-cloud-gcp.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<finalName>application</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+				
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jaxb2-maven-plugin</artifactId>
+				<version>${jaxb2-maven-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>xjc</id>
+						<goals>
+							<goal>xjc</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<xjbSources>
+							<xjbSource>src/main/resources/ecollab/global.xjb</xjbSource>
+					</xjbSources>
+					<sources>
+							<source>src/main/resources/ecollab/ECOLLAB_2020_01.xsd</source>
+							<source>src/main/resources/ecollab/datatypes_Ecollab.xsd</source>
+					</sources>
+					<clearOutputDir>true</clearOutputDir>
+					<packageName>com.mdm.accounting.batch.marketplace.annualtaxreturn</packageName>
+				</configuration>
+			</plugin>
+		</plugins>
+        
+	</build>
+    
+</project>
